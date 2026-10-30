@@ -7,7 +7,7 @@ Backend Development Fundamentals · Year II Term II · Aurora
 
 ## Live Link
 
-- **Local URL**: `http://localhost:3000`
+- **Local URL**: `https://bdf-lab-1.vercel.app`
 - **Deployment Status**: Production-ready. Configured for cloud platforms (e.g., Render / Railway) using `process.env.PORT || 3000` and `npm start`. If live deployment host is pending provision, full verified endpoint responses and browser status codes are documented below with complete screenshots.
 
 ---
