@@ -1,7 +1,7 @@
 # Lab 1: Node.js and Express server
 
 **Pattipati Dhanusree** · **252U1R1186** · **CSE-2D (19 Sec)**  
-Backend Development Fundamentals · Year II Term II · Aurora · Faculty: Joel Prashanth D
+Backend Development Fundamentals · Year II Term II · Aurora
 
 ---
 
