@@ -1,0 +1,17 @@
+
+{
+  "name": "lab-01",
+  "version": "1.0.0",
+  "description": "Lab 1 - Node.js and Express Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [],
+  "author": "Pattipati Dhanusree",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
