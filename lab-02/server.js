@@ -8,6 +8,9 @@ const app = express();
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Path to SQLite database file
 const dbPath = path.join(__dirname, 'books.db');
 let db = null;
@@ -41,14 +44,21 @@ app.get('/', (req, res) => {
     author: 'Pattipati Dhanusree',
     registrationNumber: '252U1R1186',
     section: 'CSE-2D (19 Sec)',
+    interactiveTester: 'http://localhost:3000/tester',
     endpoints: {
       getAllBooks: 'GET /books/',
       getSingleBook: 'GET /books/:bookId/',
       addBook: 'POST /books/',
       updateBook: 'PUT /books/:bookId/',
       deleteBook: 'DELETE /books/:bookId/',
+      testerUI: 'GET /tester',
     },
   });
+});
+
+// Interactive in-browser tester UI route
+app.get('/tester', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tester.html'));
 });
 
 /**

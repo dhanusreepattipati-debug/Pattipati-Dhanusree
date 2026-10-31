@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 2: SQLite Books CRUD API Tester</title>
+  <style>
+    :root {
+      --bg-color: #121620;
+      --card-bg: #1a202c;
+      --card-border: #2d3748;
+      --text-color: #e2e8f0;
+      --text-muted: #a0aec0;
+      --accent: #3182ce;
+      --green: #38a169;
+      --orange: #dd6b20;
+      --red: #e53e3e;
+      --blue: #3182ce;
+      --purple: #805ad5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .header h1 { font-size: 22px; color: #63b3ed; margin-bottom: 6px; }
+    .header p { color: var(--text-muted); font-size: 14px; }
+    .container {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .panel h2 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #90cdf4;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .endpoint-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      background: #252d3d;
+      border: 1px solid #323d52;
+      border-radius: 6px;
+      color: #edf2f7;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .endpoint-btn:hover {
+      background: #2b364a;
+      border-color: #4a5568;
+    }
+    .badge {
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-right: 10px;
+      min-width: 55px;
+      text-align: center;
+    }
+    .badge-get { background: rgba(56, 161, 105, 0.2); color: #48bb78; }
+    .badge-post { background: rgba(221, 107, 32, 0.2); color: #ed8936; }
+    .badge-put { background: rgba(49, 130, 206, 0.2); color: #63b3ed; }
+    .badge-delete { background: rgba(229, 62, 62, 0.2); color: #f56565; }
+
+    .req-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .select-method {
+      background: #252d3d;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: Consolas, monospace;
+    }
+    .url-input {
+      flex: 1;
+      background: #252d3d;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+    .btn-send {
+      background: #3182ce;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-send:hover { background: #2b6cb0; }
+    
+    .body-section {
+      margin-bottom: 16px;
+    }
+    .body-section label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 90px;
+      background: #141720;
+      border: 1px solid var(--card-border);
+      color: #68d391;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      resize: vertical;
+    }
+
+    .response-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .status-badge {
+      display: inline-block;
+      font-family: Consolas, monospace;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .status-2xx { background: rgba(56, 161, 105, 0.25); color: #48bb78; }
+    .status-4xx { background: rgba(229, 62, 62, 0.25); color: #f56565; }
+    .status-5xx { background: rgba(229, 62, 62, 0.35); color: #fc8181; }
+
+    pre {
+      background: #141720;
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      color: #e2e8f0;
+      overflow-x: auto;
+      max-height: 420px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .direct-links {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--card-border);
+      font-size: 12px;
+    }
+    .direct-links a {
+      color: #63b3ed;
+      text-decoration: none;
+      display: block;
+      margin: 4px 0;
+      font-family: Consolas, monospace;
+    }
+    .direct-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Lab 2: SQLite Database & CRUD Routes Tester</h1>
+    <p><strong>Student:</strong> Pattipati Dhanusree · <strong>Reg No:</strong> 252U1R1186 · <strong>Section:</strong> CSE-2D (19 Sec) · <strong>Aurora</strong> · Faculty: Joel Prashanth D</p>
+  </div>
+
+  <div class="container">
+    <!-- Left Navigation -->
+    <div class="panel">
+      <h2>Quick Test Endpoints</h2>
+      
+      <button class="endpoint-btn" onclick="loadRequest('GET', '/books/', null, '1. GET All Books')">
+        <span class="badge badge-get">GET</span>
+        <span>1. /books/ (All Books)</span>
+      </button>
+
+      <button class="endpoint-btn" onclick="loadRequest('GET', '/books/1/', null, '2. GET Single Book')">
+        <span class="badge badge-get">GET</span>
+        <span>2. /books/1/ (Book 1)</span>
+      </button>
+
+      <button class="endpoint-btn" onclick="loadRequest('POST', '/books/', postPayload, '3. POST Add Book')">
+        <span class="badge badge-post">POST</span>
+        <span>3. /books/ (Add Book)</span>
+      </button>
+
+      <button class="endpoint-btn" onclick="loadRequest('PUT', '/books/11/', putPayload, '4. PUT Update Book')">
+        <span class="badge badge-put">PUT</span>
+        <span>4. /books/11/ (Update Book)</span>
+      </button>
+
+      <button class="endpoint-btn" onclick="loadRequest('DELETE', '/books/11/', null, '5. DELETE Book')">
+        <span class="badge badge-delete">DELETE</span>
+        <span>5. /books/11/ (Remove Book)</span>
+      </button>
+
+      <button class="endpoint-btn" onclick="loadRequest('GET', '/books/999/', null, '6. 404 Error Test')">
+        <span class="badge badge-get">GET</span>
+        <span>6. /books/999/ (404 Test)</span>
+      </button>
+
+      <div class="direct-links">
+        <strong style="color: #a0aec0;">Direct Browser Clickable Links (GET):</strong>
+        <a href="/books/" target="_blank">↗ /books/ (All Books)</a>
+        <a href="/books/1/" target="_blank">↗ /books/1/ (Book ID 1)</a>
+        <a href="/books/999/" target="_blank">↗ /books/999/ (404 Error)</a>
+      </div>
+    </div>
+
+    <!-- Right Interaction Panel -->
+    <div class="panel">
+      <h2 id="action-title">Request Runner</h2>
+      
+      <div class="req-bar">
+        <select id="method" class="select-method">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+        <input type="text" id="url" class="url-input" value="/books/">
+        <button class="btn-send" onclick="sendRequest()">SEND</button>
+      </div>
+
+      <div class="body-section" id="body-container" style="display: none;">
+        <label for="req-body">Request Body (JSON):</label>
+        <textarea id="req-body"></textarea>
+      </div>
+
+      <div class="response-header">
+        <div>
+          <span style="color: var(--text-muted); font-size: 13px;">Status: </span>
+          <span id="res-status" class="status-badge status-2xx">Ready</span>
+          <span id="res-time" style="color: var(--text-muted); font-size: 12px; margin-left: 10px;"></span>
+        </div>
+      </div>
+
+      <pre id="res-output">// Click "SEND" or any endpoint on the left to execute the request.</pre>
+    </div>
+  </div>
+
+  <script>
+    const postPayload = JSON.stringify({
+      title: "Node.js Design Patterns",
+      author: "Mario Casciaro & Luciano Mammino",
+      price: 799,
+      pages: 660
+    }, null, 2);
+
+    const putPayload = JSON.stringify({
+      title: "Node.js Design Patterns (3rd Edition)",
+      author: "Mario Casciaro & Luciano Mammino",
+      price: 850,
+      pages: 680
+    }, null, 2);
+
+    function loadRequest(method, path, body, title) {
+      document.getElementById('method').value = method;
+      document.getElementById('url').value = path;
+      document.getElementById('action-title').textContent = title || "Request Runner";
+
+      const bodyContainer = document.getElementById('body-container');
+      const reqBody = document.getElementById('req-body');
+
+      if (body) {
+        bodyContainer.style.display = 'block';
+        reqBody.value = body;
+      } else {
+        bodyContainer.style.display = 'none';
+        reqBody.value = '';
+      }
+      sendRequest();
+    }
+
+    async function sendRequest() {
+      const method = document.getElementById('method').value;
+      const path = document.getElementById('url').value;
+      const bodyText = document.getElementById('req-body').value;
+      const statusBadge = document.getElementById('res-status');
+      const timeSpan = document.getElementById('res-time');
+      const resOutput = document.getElementById('res-output');
+
+      resOutput.textContent = 'Sending request...';
+      const startTime = performance.now();
+
+      try {
+        const options = {
+          method: method,
+          headers: {}
+        };
+
+        if (['POST', 'PUT'].includes(method) && bodyText.trim()) {
+          options.headers['Content-Type'] = 'application/json';
+          options.body = bodyText;
+        }
+
+        const res = await fetch(path, options);
+        const duration = Math.round(performance.now() - startTime);
+
+        statusBadge.textContent = `${res.status} ${res.statusText || ''}`;
+        statusBadge.className = 'status-badge ' + (res.status >= 200 && res.status < 300 ? 'status-2xx' : (res.status >= 400 && res.status < 500 ? 'status-4xx' : 'status-5xx'));
+        timeSpan.textContent = `(${duration} ms)`;
+
+        const text = await res.text();
+        try {
+          const json = JSON.parse(text);
+          resOutput.textContent = JSON.stringify(json, null, 2);
+        } catch {
+          resOutput.textContent = text;
+        }
+      } catch (err) {
+        statusBadge.textContent = 'Error';
+        statusBadge.className = 'status-badge status-5xx';
+        resOutput.textContent = err.message;
+      }
+    }
+
+    // Auto-load all books on open
+    window.onload = () => loadRequest('GET', '/books/', null, '1. GET All Books');
+  </script>
+</body>
+</html>
