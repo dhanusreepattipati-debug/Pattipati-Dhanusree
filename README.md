@@ -5,7 +5,7 @@
 **Section**: CSE-2D (19 Sec)  
 **Academic Year**: Year II Term II  
 **Institution**: Aurora  
-**Faculty**: Joel Prashanth D  
+  
 
 ---
 
