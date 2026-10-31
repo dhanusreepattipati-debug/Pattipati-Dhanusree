@@ -23,17 +23,17 @@ Connect an Express.js server to an SQLite relational database and expose full CR
 1. **Package Setup & Nodemon Configuration**:
    - Initialized project manifest `package.json`.
    - Installed `express`, `sqlite`, `sqlite3`, and `nodemon`.
-   - Configured `npm run dev` (`nodemon server.js`) to restart the server on code changes and `npm start` (`node server.js`) for production.
+   - Configured `npm run dev` (`nodemon app.js`) to restart the server on code changes and `npm start` (`node app.js`) for production.
 
 2. **Database & Schema Initialization**:
    - Designed SQLite database schema in `books.db` with table:
      ```sql
-     CREATE TABLE book (
-       id INTEGER PRIMARY KEY AUTOINCREMENT,
-       title TEXT NOT NULL,
-       author TEXT NOT NULL,
-       price INTEGER NOT NULL,
-       pages INTEGER NOT NULL
+     CREATE TABLE IF NOT EXISTS book (
+       id INTEGER PRIMARY KEY,
+       title TEXT,
+       author TEXT,
+       price INTEGER,
+       pages INTEGER
      );
      ```
    - Seeded 10 books into the database using `init-db.sql` and `init-db.js`.
