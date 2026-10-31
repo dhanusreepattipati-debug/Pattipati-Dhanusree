@@ -1,0 +1,41 @@
+### Lab 2: SQLite Database and CRUD Routes - HTTP Requests File
+### You can run these directly in VS Code (with REST Client / Thunder Client) or Postman
+
+@baseUrl = http://localhost:3000
+
+### 1. API Health & Overview
+GET {{baseUrl}}/
+
+### 2. GET /books/ - Get all books
+GET {{baseUrl}}/books/
+
+### 3. GET /books/:bookId/ - Get single book by ID
+GET {{baseUrl}}/books/1/
+
+### 4. POST /books/ - Add a new book
+POST {{baseUrl}}/books/
+Content-Type: application/json
+
+{
+  "title": "Node.js Design Patterns",
+  "author": "Mario Casciaro & Luciano Mammino",
+  "price": 799,
+  "pages": 660
+}
+
+### 5. PUT /books/:bookId/ - Update an existing book
+PUT {{baseUrl}}/books/11/
+Content-Type: application/json
+
+{
+  "title": "Node.js Design Patterns (3rd Edition)",
+  "author": "Mario Casciaro & Luciano Mammino",
+  "price": 850,
+  "pages": 680
+}
+
+### 6. DELETE /books/:bookId/ - Delete a book
+DELETE {{baseUrl}}/books/11/
+
+### 7. GET /books/999/ - 404 Error Test
+GET {{baseUrl}}/books/999/
