@@ -60,16 +60,9 @@ Pattipati-Dhanusree/
 
 | Lab No. | Module / Topic | Status | Directory Link |
 | :---: | :--- | :---: | :---: |
-| **Lab 01** | **Node.js and Express Server Fundamentals** | **Completed** | [lab-01/](./lab-01) |
+
 | **Lab 02** | **SQLite Database and CRUD Routes** | **Completed** | [lab-02/](./lab-02) |
-| Lab 03 | RESTful API Design & HTTP Verbs | Planned | *Upcoming* |
-| Lab 04 | Database Relationships & Joins | Planned | *Upcoming* |
-| Lab 05 | Data Validation & Error Handling | Planned | *Upcoming* |
-| Lab 06 | User Authentication & JWT | Planned | *Upcoming* |
-| Lab 07 | Password Hashing & Security | Planned | *Upcoming* |
-| Lab 08 | Advanced Database Operations | Planned | *Upcoming* |
-| Lab 09 | File Uploads & Static Assets | Planned | *Upcoming* |
-| Lab 10 | API Deployment & Final Capstone | Planned | *Upcoming* |
+
 
 ---
 
