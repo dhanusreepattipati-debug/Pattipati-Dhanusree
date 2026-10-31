@@ -7,7 +7,7 @@ Backend Development Fundamentals · Year II Term II · Aurora ·
 
 ## Live Link
 
-- **Local Development URL**: `http://localhost:3000`
+- **Local Development URL**: `https://bdf-lab2.vercel.app`
 - **Deployment Status**: Production-ready. Configured for cloud hosting platforms (e.g., Render / Railway / NxtWave Cloud IDE) using `process.env.PORT || 3000` and `npm start`. If cloud host provisioning is pending, all 5 endpoints and database state changes are verified and documented below with Postman and SQLite CLI screenshots.
 
 ---
