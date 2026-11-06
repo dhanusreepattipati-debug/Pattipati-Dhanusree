@@ -1,0 +1,28 @@
+{
+  "name": "lab3-rest-api",
+  "version": "1.0.0",
+  "description": "Lab 3: REST API, query parameters, validation, debugging - Backend Development Fundamentals",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node test-api.js"
+  },
+  "keywords": [
+    "express",
+    "rest-api",
+    "sqlite",
+    "validation",
+    "query-parameters"
+  ],
+  "author": "Pattipati Dhanusree (252U1R1186)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

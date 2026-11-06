@@ -1,0 +1,300 @@
+@baseUrl = http://localhost:3000
+@bookId = 1
+
+##################################################
+# 1. GET ALL BOOKS
+##################################################
+
+### GET all books
+GET {{baseUrl}}/books
+
+
+##################################################
+# 2. POST - CREATE BOOK
+##################################################
+
+### Create first book
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "JavaScript Basics",
+  "author": "John",
+  "price": 500
+}
+
+###
+
+### Create second book
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "Node.js Guide",
+  "author": "David",
+  "price": 700
+}
+
+###
+
+### Create third book
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "Python Programming",
+  "author": "Smith",
+  "price": 400
+}
+
+
+##################################################
+# 3. GET BOOK BY ID
+##################################################
+
+### Get book with ID 1
+GET {{baseUrl}}/books/{{bookId}}
+
+
+##################################################
+# 4. 404 - BOOK NOT FOUND
+##################################################
+
+### Get nonexistent book
+GET {{baseUrl}}/books/9999
+
+###
+
+### Update nonexistent book
+PUT {{baseUrl}}/books/9999
+Content-Type: application/json
+
+{
+  "title": "Unknown Book",
+  "author": "Unknown",
+  "price": 300
+}
+
+###
+
+### Delete nonexistent book
+DELETE {{baseUrl}}/books/9999
+
+
+##################################################
+# 5. PUT - UPDATE BOOK
+##################################################
+
+### Update book with ID 1
+PUT {{baseUrl}}/books/{{bookId}}
+Content-Type: application/json
+
+{
+  "title": "Advanced JavaScript",
+  "author": "John",
+  "price": 800
+}
+
+###
+
+### Verify updated book
+GET {{baseUrl}}/books/{{bookId}}
+
+###
+
+### Invalid update - missing title
+PUT {{baseUrl}}/books/{{bookId}}
+Content-Type: application/json
+
+{
+  "author": "John",
+  "price": 800
+}
+
+
+##################################################
+# 6. DELETE - DELETE BOOK
+##################################################
+
+### Delete book with ID 1
+DELETE {{baseUrl}}/books/{{bookId}}
+
+###
+
+### Verify deleted book
+GET {{baseUrl}}/books/{{bookId}}
+
+
+##################################################
+# 7. SEARCH BOOKS
+##################################################
+
+### Search Java books
+GET {{baseUrl}}/books?search_q=Java
+
+###
+
+### Search Node books
+GET {{baseUrl}}/books?search_q=Node
+
+###
+
+### Search Python books
+GET {{baseUrl}}/books?search_q=Python
+
+###
+
+### Search with no matching results
+GET {{baseUrl}}/books?search_q=Angular
+
+
+##################################################
+# 8. SORTING
+##################################################
+
+### Sort by price - ascending
+GET {{baseUrl}}/books?order_by=price&order=ASC
+
+###
+
+### Sort by price - descending
+GET {{baseUrl}}/books?order_by=price&order=DESC
+
+###
+
+### Sort by title
+GET {{baseUrl}}/books?order_by=title&order=ASC
+
+###
+
+### Invalid sorting column
+GET {{baseUrl}}/books?order_by=password
+
+###
+
+### Invalid sorting order
+GET {{baseUrl}}/books?order=XYZ
+
+
+##################################################
+# 9. PRICE FILTERING
+##################################################
+
+### Minimum and maximum price
+GET {{baseUrl}}/books?min_price=200&max_price=800
+
+###
+
+### Minimum price only
+GET {{baseUrl}}/books?min_price=500
+
+###
+
+### Maximum price only
+GET {{baseUrl}}/books?max_price=500
+
+###
+
+### Invalid minimum price
+GET {{baseUrl}}/books?min_price=abc
+
+###
+
+### Invalid price range
+GET {{baseUrl}}/books?min_price=900&max_price=200
+
+
+##################################################
+# 10. PAGINATION
+##################################################
+
+### First two books
+GET {{baseUrl}}/books?limit=2&offset=0
+
+###
+
+### Next two books
+GET {{baseUrl}}/books?limit=2&offset=2
+
+###
+
+### Invalid limit
+GET {{baseUrl}}/books?limit=-5
+
+###
+
+### Invalid offset
+GET {{baseUrl}}/books?limit=5&offset=-2
+
+
+##################################################
+# 11. COMBINED QUERY PARAMETERS
+##################################################
+
+### Search + Sort + Price Filter + Pagination
+GET {{baseUrl}}/books?search_q=Java&order_by=price&order=ASC&min_price=200&max_price=1000&limit=5&offset=0
+
+
+##################################################
+# 12. POST VALIDATION - FAILURE CASES
+##################################################
+
+### Missing title
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "author": "John",
+  "price": 500
+}
+
+###
+
+### Missing author
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "React Guide",
+  "price": 500
+}
+
+###
+
+### Missing price
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "React Guide",
+  "author": "John"
+}
+
+###
+
+### String instead of numeric price
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "React Guide",
+  "author": "John",
+  "price": "abc"
+}
+
+###
+
+### Negative price
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "React Guide",
+  "author": "John",
+  "price": -100
+}
+
+
+##################################################
+# END OF LAB 3 TEST CASES
+##################################################
