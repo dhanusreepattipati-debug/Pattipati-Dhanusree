@@ -8,6 +8,7 @@ Backend Development Fundamentals · Year II Term II · Aurora ·
 ## Objective
 
 Turn the Lab 2 routes into a clean REST API with search, sorting, validation, correct status codes, and practise debugging common errors.
+LIVE LINK : https://bdf-lab3.vercel.app
 
 ---
 
