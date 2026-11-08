@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 3: REST API & Query Parameters Tester</title>
+  <style>
+    :root {
+      --bg-color: #121314;
+      --card-bg: #1a1b1e;
+      --card-border: #28292d;
+      --text-color: #e2e8f0;
+      --text-muted: #8c92a4;
+      --accent: #3182ce;
+      --green: #48bb78;
+      --orange: #ed8936;
+      --red: #f56565;
+      --blue: #4299e1;
+      --purple: #9f7aea;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .header h1 { font-size: 22px; color: #63b3ed; margin-bottom: 6px; }
+    .header p { color: var(--text-muted); font-size: 14px; }
+    .student-badge {
+      display: inline-block;
+      margin-top: 10px;
+      background: #232733;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #cbd5e0;
+      border: 1px solid #323846;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .panel h2 {
+      font-size: 15px;
+      margin-bottom: 14px;
+      color: #90cdf4;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .section-title {
+      font-size: 11px;
+      color: #a0aec0;
+      text-transform: uppercase;
+      margin: 14px 0 6px 0;
+      letter-spacing: 0.5px;
+    }
+    .endpoint-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: #23252a;
+      border: 1px solid #2d3036;
+      border-radius: 6px;
+      color: #edf2f7;
+      font-size: 12.5px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .endpoint-btn:hover {
+      background: #2a2d34;
+      border-color: #4a5568;
+    }
+    .badge {
+      font-family: Consolas, monospace;
+      font-size: 10.5px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 8px;
+      min-width: 52px;
+      text-align: center;
+    }
+    .badge-get { background: rgba(72, 187, 120, 0.2); color: #48bb78; }
+    .badge-post { background: rgba(237, 137, 54, 0.2); color: #ed8936; }
+    .badge-put { background: rgba(66, 153, 225, 0.2); color: #63b3ed; }
+    .badge-delete { background: rgba(245, 101, 101, 0.2); color: #f56565; }
+
+    .req-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .select-method {
+      background: #23252a;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+    .input-url {
+      flex: 1;
+      background: #23252a;
+      border: 1px solid var(--card-border);
+      color: #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+    .btn-send {
+      background: #3182ce;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-send:hover { background: #2b6cb0; }
+    .body-group {
+      margin-bottom: 16px;
+    }
+    .body-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      background: #141517;
+      border: 1px solid var(--card-border);
+      color: #9cdcfe;
+      font-family: Consolas, monospace;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      resize: vertical;
+    }
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      background: #181a1d;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      font-size: 13px;
+    }
+    .status-badge {
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    .status-200, .status-201 { background: rgba(72, 187, 120, 0.2); color: #48bb78; }
+    .status-400, .status-404 { background: rgba(245, 101, 101, 0.2); color: #f56565; }
+    .status-500 { background: rgba(229, 62, 62, 0.3); color: #fc8181; }
+
+    pre {
+      background: #141517;
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      border-radius: 6px;
+      color: #cbd5e0;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      max-height: 440px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Lab 3: REST API, Query Parameters & Validation Tester</h1>
+    <p>Interactive testing suite for search, sorting, price range filters, pagination, and request validation.</p>
+    <div class="student-badge">
+      <strong>Pattipati Dhanusree</strong> &bull; 252U1R1186 &bull; CSE-2D (19 Sec) &bull; Backend Development Fundamentals
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Pre-configured Tests</h2>
+
+      <div class="section-title">1. Standard CRUD</div>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books', '')">
+        <span class="badge badge-get">GET</span> All Books (/books)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books/2', '')">
+        <span class="badge badge-get">GET</span> Single Book (/books/2)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('POST', '/books', JSON.stringify({title: 'Docker Deep Dive', author: 'Nigel Poulton', price: 620}, null, 2))">
+        <span class="badge badge-post">POST</span> Create Book (/books)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('PUT', '/books/2', JSON.stringify({title: 'JavaScript: The Definitive Guide', author: 'David Flanagan', price: 850}, null, 2))">
+        <span class="badge badge-put">PUT</span> Update Book (/books/2)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('DELETE', '/books/2', '')">
+        <span class="badge badge-delete">DEL</span> Delete Book (/books/2)
+      </button>
+
+      <div class="section-title">2. Search & Filtering</div>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?search_q=Node', '')">
+        <span class="badge badge-get">GET</span> Search Title LIKE 'Node'
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?min_price=450&max_price=750', '')">
+        <span class="badge badge-get">GET</span> Price Range (450 to 750)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?order_by=price&order=DESC', '')">
+        <span class="badge badge-get">GET</span> Sort by Price DESC
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?limit=2&offset=0', '')">
+        <span class="badge badge-get">GET</span> Pagination (limit=2, offset=0)
+      </button>
+
+      <div class="section-title">3. Validation & 404 Failures</div>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books/9999', '')">
+        <span class="badge badge-get">GET</span> Nonexistent ID (404)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('POST', '/books', JSON.stringify({author: 'John', price: 500}, null, 2))">
+        <span class="badge badge-post">POST</span> Missing Title (400)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('POST', '/books', JSON.stringify({title: 'React', author: 'Dan', price: 'invalid'}, null, 2))">
+        <span class="badge badge-post">POST</span> String Price (400)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?order_by=password', '')">
+        <span class="badge badge-get">GET</span> Invalid Sort Column (400)
+      </button>
+      <button class="endpoint-btn" onclick="setReq('GET', '/books?min_price=900&max_price=200', '')">
+        <span class="badge badge-get">GET</span> Invalid Price Range (400)
+      </button>
+    </div>
+
+    <div class="panel">
+      <h2>Request & Response Console</h2>
+
+      <div class="req-bar">
+        <select id="method" class="select-method">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+        <input type="text" id="url" class="input-url" value="/books" />
+        <button class="btn-send" onclick="sendRequest()">Send</button>
+      </div>
+
+      <div class="body-group">
+        <label>JSON Body (for POST / PUT)</label>
+        <textarea id="body" placeholder='{"title": "Book Title", "author": "Author Name", "price": 500}'></textarea>
+      </div>
+
+      <div class="status-bar" id="statusBar" style="display: none;">
+        <span>Status: <span id="statusCode" class="status-badge"></span></span>
+        <span>Time: <span id="responseTime" style="color: #48bb78; font-weight: bold;"></span></span>
+      </div>
+
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Response Payload</label>
+      <pre id="output">Click a pre-configured test on the left or press "Send" to execute an API call...</pre>
+    </div>
+  </div>
+
+  <script>
+    function setReq(method, path, body) {
+      document.getElementById('method').value = method;
+      document.getElementById('url').value = path;
+      document.getElementById('body').value = body || '';
+      sendRequest();
+    }
+
+    async function sendRequest() {
+      const method = document.getElementById('method').value;
+      const url = document.getElementById('url').value;
+      const bodyText = document.getElementById('body').value.trim();
+      const output = document.getElementById('output');
+      const statusBar = document.getElementById('statusBar');
+      const statusCode = document.getElementById('statusCode');
+      const responseTime = document.getElementById('responseTime');
+
+      output.textContent = 'Executing request...';
+      const startTime = performance.now();
+
+      try {
+        const options = {
+          method: method,
+          headers: {}
+        };
+
+        if (['POST', 'PUT'].includes(method) && bodyText) {
+          options.headers['Content-Type'] = 'application/json';
+          options.body = bodyText;
+        }
+
+        const res = await fetch(url, options);
+        const timeTaken = Math.round(performance.now() - startTime);
+
+        statusBar.style.display = 'flex';
+        statusCode.textContent = `${res.status} ${res.statusText}`;
+        statusCode.className = `status-badge status-${res.status}`;
+        responseTime.textContent = `${timeTaken} ms`;
+
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          output.textContent = JSON.stringify(data, null, 2);
+        } else {
+          output.textContent = await res.text();
+        }
+      } catch (err) {
+        statusBar.style.display = 'none';
+        output.textContent = `Network / Request Error:\n${err.message}`;
+      }
+    }
+  </script>
+</body>
+</html>

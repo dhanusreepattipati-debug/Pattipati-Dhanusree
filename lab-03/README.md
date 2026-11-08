@@ -5,6 +5,14 @@ Backend Development Fundamentals · Year II Term II · Aurora ·
 
 ---
 
+## Live Links
+
+- **Production API URL**: `https://bdf-lab3.vercel.app`
+- **Interactive In-Browser Tester**: `https://bdf-lab3.vercel.app/tester`
+- **Books Endpoint**: `https://bdf-lab3.vercel.app/books`
+
+---
+
 ## Objective
 
 Turn the Lab 2 routes into a clean REST API with search, sorting, validation, correct status codes, and practise debugging common errors.
@@ -92,6 +100,8 @@ npm install
 
 | HTTP Method | Route | Description | Query / Body Parameters | Success Status | Failure Status | Sample JSON Response |
 | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
+| `GET` | `/` | API Overview & Health Check | *None* | `200 OK` | *None* | `{"message":"Welcome to the Books REST API (Lab 3)",...}` |
+| `GET` | `/tester` | Interactive In-Browser Tester UI | *None* | `200 OK` | *None* | `HTML UI Document` |
 | `GET` | `/books` | Retrieve books with optional search, sorting, price filter & pagination | `search_q`, `order_by`, `order`, `limit`, `offset`, `min_price`, `max_price` | `200 OK` | `400 Bad Request` | `[{"id":2,"title":"JavaScript Basics","author":"John","price":500}]` |
 | `GET` | `/books/:id` | Retrieve single book by primary key ID | *None* | `200 OK` | `404 Not Found` | `{"id":2,"title":"JavaScript Basics","author":"John","price":500}` |
 | `POST` | `/books` | Create a new book record | Body: `{"title": "...", "author": "...", "price": 500}` | `201 Created` | `400 Bad Request` | `{"message":"Book created successfully","book_id":7}` |

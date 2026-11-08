@@ -1,11 +1,65 @@
 const express = require("express");
+const path = require("path");
 const initializeDB = require("./database");
 
 const app = express();
 
 app.use(express.json());
 
+// Serve static assets (e.g. interactive tester UI)
+app.use(express.static(path.join(__dirname, "public")));
+
 let db = null;
+
+const getDB = async () => {
+  if (!db) {
+    db = await initializeDB();
+  }
+  return db;
+};
+
+// Root endpoint: API Overview & Health Check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to the Books REST API with Search, Filtering & Validation (Lab 3)",
+    student: "Pattipati Dhanusree",
+    rollNumber: "252U1R1186",
+    section: "CSE-2D (19 Sec)",
+    subject: "Backend Development Fundamentals - Aurora",
+    interactiveTester: "/tester",
+    endpoints: {
+      getAllBooks: "GET /books",
+      searchBooks: "GET /books?search_q=Node",
+      sortBooks: "GET /books?order_by=price&order=DESC",
+      filterByPrice: "GET /books?min_price=400&max_price=800",
+      paginateBooks: "GET /books?limit=2&offset=0",
+      getSingleBook: "GET /books/:id",
+      createBook: "POST /books",
+      updateBook: "PUT /books/:id",
+      deleteBook: "DELETE /books/:id",
+    },
+  });
+});
+
+// Interactive in-browser tester UI route
+app.get("/tester", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "tester.html"));
+});
+
+// Database connection middleware - guarantees DB is initialized before any route executes
+app.use(async (req, res, next) => {
+  try {
+    if (!db) {
+      db = await getDB();
+    }
+    next();
+  } catch (err) {
+    console.error("Database connection failed in middleware:", err);
+    res.status(500).json({
+      message: "Internal server error: Database initialization failed",
+    });
+  }
+});
 
 // ==========================================
 // API 1: GET ALL BOOKS (WITH SEARCH, SORT, FILTER & PAGINATION)
@@ -279,21 +333,17 @@ app.use((request, response) => {
 // ==========================================
 const PORT = process.env.PORT || 3000;
 
-const startServer = async () => {
-  try {
-    db = await initializeDB();
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("Database initialization failed:", error);
-    process.exit(1);
-  }
-};
-
-// Start server when executed directly
-if (require.main === module) {
-  startServer();
-}
+// Connect to DB immediately and start server when running standalone
+getDB()
+  .then(() => {
+    if (require.main === module || !process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}`);
+      });
+    }
+  })
+  .catch((err) => {
+    console.error("Database initialization failed:", err);
+  });
 
 module.exports = app;

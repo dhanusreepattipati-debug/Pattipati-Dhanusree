@@ -1,10 +1,29 @@
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 const path = require("path");
+const fs = require("fs");
 
-const dbPath = path.join(__dirname, "books.db");
+const getDbPath = () => {
+  // On Vercel / AWS Lambda serverless environments, the deployment root is read-only.
+  // We copy the database to /tmp so both reads and writes (INSERT, UPDATE, DELETE) work smoothly.
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    const tmpDbPath = path.join("/tmp", "books.db");
+    const sourceDbPath = path.join(__dirname, "books.db");
+    if (!fs.existsSync(tmpDbPath) && fs.existsSync(sourceDbPath)) {
+      try {
+        fs.copyFileSync(sourceDbPath, tmpDbPath);
+      } catch (e) {
+        console.error("Error copying books.db to /tmp:", e);
+      }
+    }
+    return tmpDbPath;
+  }
+  return path.join(__dirname, "books.db");
+};
 
 const initializeDB = async () => {
+  const dbPath = getDbPath();
+
   const db = await open({
     filename: dbPath,
     driver: sqlite3.Database,
@@ -23,7 +42,7 @@ const initializeDB = async () => {
 
   // Check if initial books seed is needed
   const countResult = await db.get("SELECT COUNT(*) AS count FROM books;");
-  if (countResult.count === 0) {
+  if (!countResult || countResult.count === 0) {
     const seedQuery = `
       INSERT INTO books (title, author, price) VALUES
         ('JavaScript Basics', 'John', 500),
@@ -35,7 +54,7 @@ const initializeDB = async () => {
     await db.exec(seedQuery);
   }
 
-  console.log("Database connected and table ready.");
+  console.log(`Database connected (${dbPath}) and table ready.`);
   return db;
 };
 
